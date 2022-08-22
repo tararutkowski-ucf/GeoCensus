@@ -161,7 +161,7 @@ if st.button('Run Algorithm'):
     if house is not None:
         if store is not None:
             data_load_state = st.text('Loading data...')
-            data = run_algo(house_df, store_df)
+            data = run_algo(house_df, store_df, number)
             data_load_state.text("Done!")
             st.write(data)
             csv = convert_df(data)
