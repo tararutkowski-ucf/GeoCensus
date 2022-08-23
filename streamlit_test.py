@@ -45,7 +45,7 @@ def closest(stores, house, number):
     min_distance10 = 556700
     close_store10 = "NaN"
     for index, store in stores.iterrows():
-        distance = haversine(house['lat'],house['lon'],store['Latitude'],store['Longitude'])
+        distance = haversine(house['Lat'],house['Lon'],store['Lat'],store['Lon'])
         if (distance < min_distance1): #& (distance > 0):
             min_distance1 = distance
             close_store1 = store
