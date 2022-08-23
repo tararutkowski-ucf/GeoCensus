@@ -96,7 +96,7 @@ def closest(stores, house, number):
 @st.cache
 def test_fn(stores, house, number):
     test= closest(stores, house, number)
-    test = test.add_prefix('store_')
+    #test = test.add_prefix('store_')
     return test[number]
 
 @st.cache
