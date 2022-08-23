@@ -163,7 +163,7 @@ if st.button('Run Algorithm'):
             data_load_state = st.text('Loading data...')
             data = run_algo(house_df, store_df, number)
             data_load_state.text("Done!")
-            st.write(data)
+            #st.write(data)
             csv = convert_df(data)
             st.download_button(
                  label="Download data as CSV",
