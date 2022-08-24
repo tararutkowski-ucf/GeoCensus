@@ -7,6 +7,7 @@ Created on Wed Jul 27 14:24:33 2022
 
 import streamlit as st
 import pandas as pd
+from stqdm import stqdm
 import math
 
 @st.cache
@@ -22,58 +23,58 @@ def haversine(lat1, lon1, lat2, lon2):
     return R * c
 
 @st.cache
- 
-def closest(stores, house, number):
+def closest(stores, house):
+    
     min_distance1 = 556200
-    close_store1 = "NaN"
+    close_store1 = stores.head(1)
     min_distance2 = 556300
-    close_store2 = "NaN"
+    close_store2 = stores.head(1)
     min_distance3 = 556400
-    close_store3 = "NaN"
+    close_store3 = stores.head(1)
     min_distance4 = 556500
-    close_store4 = "NaN"
+    close_store4 = stores.head(1)
     min_distance5 = 556600
-    close_store5 = "NaN"
+    close_store5 = stores.head(1)
     min_distance6 = 556300
-    close_store6 = "NaN"
+    close_store6 = stores.head(1)
     min_distance7 = 556400
-    close_store7 = "NaN"
+    close_store7 = stores.head(1)
     min_distance8 = 556500
-    close_store8 = "NaN"
+    close_store8 = stores.head(1)
     min_distance9 = 556600
-    close_store9 = "NaN"
+    close_store9 = stores.head(1)
     min_distance10 = 556700
-    close_store10 = "NaN"
+    close_store10 = stores.head(1)
     for index, store in stores.iterrows():
         distance = haversine(house['Lat'],house['Lon'],store['Lat'],store['Lon'])
         if (distance < min_distance1): #& (distance > 0):
             min_distance1 = distance
             close_store1 = store
-        elif (distance < min_distance2) and (number < 1):
+        elif (distance < min_distance2):
             min_distance2 = distance
             close_store2 = store
-        elif (distance < min_distance3) and (number < 2):
+        elif (distance < min_distance3):
             min_distance3 = distance
             close_store3 = store
-        elif (distance < min_distance4)  and (number < 3):
+        elif (distance < min_distance4):
             min_distance4 = distance
             close_store4 = store
-        elif (distance < min_distance5) and (number < 4):
+        elif (distance < min_distance5):
             min_distance5 = distance
             close_store5 = store
-        elif (distance < min_distance6) and (number < 5):
+        elif (distance < min_distance6):
             min_distance6 = distance
             close_store6 = store
-        elif (distance < min_distance7) and (number < 6):
+        elif (distance < min_distance7):
             min_distance7 = distance
             close_store7 = store
-        elif (distance < min_distance8) and (number < 7):
+        elif (distance < min_distance8):
             min_distance8 = distance
             close_store8 = store
-        elif (distance < min_distance9) and (number < 8):
+        elif (distance < min_distance9):
             min_distance9 = distance
             close_store9 = store
-        elif (distance < min_distance10) and (number < 9):
+        elif (distance < min_distance10):
             min_distance10 = distance
             close_store10 = store
         else:
@@ -89,24 +90,40 @@ def closest(stores, house, number):
     close_store8["Distance"] = min_distance8
     close_store9["Distance"] = min_distance9
     close_store10["Distance"] = min_distance10
+
+    close_store1["id"] = house["id"].values[0]
+    close_store2["id"] = house["id"].values[0]
+    close_store3["id"] = house["id"].values[0]
+    close_store4["id"] = house["id"].values[0]
+    close_store5["id"] = house["id"].values[0]
+    close_store6["id"] = house["id"].values[0]
+    close_store7["id"] = house["id"].values[0]
+    close_store8["id"] = house["id"].values[0]
+    close_store9["id"] = house["id"].values[0]
+    close_store10["id"] = house["id"].values[0]
+
     return close_store1, close_store2, close_store3, close_store4, close_store5, close_store6, close_store7, close_store8, close_store9, close_store10
     #return close_store2
 
 
 @st.cache
 def test_fn(stores, house, number):
+    house = house.to_frame().T
     test= closest(stores, house, number)
-    #test = test.add_prefix('store_')
-    return test[number]
+    for i in range(0, number):
+        close = test[i].add_prefix(f'{i+1}_store_')
+        close = close.to_frame().T
+        house = house.merge(close, how='left', left_on='id', right_on=f'{i+1}_store_id')
+    return house
 
 @st.cache
 def run_algo(df, store, max_i):
-    for i in range(0,max_i):
-        appiled_df = df.apply(lambda row: test_fn(store, row, i), axis='columns', result_type='expand')
-        df = pd.concat([df, appiled_df], axis='columns')
-    df = df.add_prefix('house_')
-    df = pd.concat([df, appiled_df], axis='columns')
-    return df
+    df["id"] = df.index + 1
+    results = pd.DataFrame()
+    for index, row in stqdm(df.head().iterrows(),  total=df.shape[0]):
+        test = test_fn(store, row, max_i)
+        results = results.append(test)
+    return results
 
 @st.cache
 def convert_df(df):
