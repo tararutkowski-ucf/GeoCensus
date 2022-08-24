@@ -171,8 +171,7 @@ if store is not None:
          st.markdown(""" <style> .font {font-size:20px ; font-family: 'Arial'; color: #FF0000;} </style> """, unsafe_allow_html=True)
          st.markdown('<p class="font">No column named Lon</p>', unsafe_allow_html=True)
 
-st.text('Please input a number from 1 to 10 specifying how many "Stores" you would like to return for each "House"')
-number = st.number_input(label = 'Enter a number 1-10', min_value=1, max_value=10)
+number = st.number_input(label = 'Please specify how many results you would like to see (1 returns closest 1 "store", 10 returns 10 closest "stores"', min_value=1, max_value=10)
 
 if st.button('Run Algorithm'):
     if house is not None:
