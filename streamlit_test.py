@@ -7,7 +7,6 @@ Created on Wed Jul 27 14:24:33 2022
 
 import streamlit as st
 import pandas as pd
-from stqdm import stqdm
 import math
 
 @st.cache
@@ -120,7 +119,7 @@ def test_fn(stores, house, number):
 def run_algo(df, store, max_i):
     df["id"] = df.index + 1
     results = pd.DataFrame()
-    for index, row in stqdm(df.head().iterrows(),  total=df.shape[0]):
+    for index, row in df.iterrows():
         test = test_fn(store, row, max_i)
         results = results.append(test)
     return results
