@@ -109,14 +109,14 @@ def closest(stores, house):
 @st.cache
 def test_fn(stores, house, number):
     house = house.to_frame().T
-    test= closest(stores, house, number)
+    test= closest(stores, house)
     for i in range(0, number):
         close = test[i].add_prefix(f'{i+1}_store_')
         close = close.to_frame().T
         house = house.merge(close, how='left', left_on='id', right_on=f'{i+1}_store_id')
     return house
 
-@st.cache
+
 def run_algo(df, store, max_i):
     df["id"] = df.index + 1
     results = pd.DataFrame()
