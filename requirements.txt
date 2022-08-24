@@ -1,0 +1,4 @@
+stqdm
+pandas
+numpy
+math
