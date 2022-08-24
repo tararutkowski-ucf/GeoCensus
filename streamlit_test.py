@@ -119,7 +119,7 @@ def test_fn(stores, house, number):
 def run_algo(df, store, max_i):
     df["id"] = df.index + 1
     results = pd.DataFrame()
-    for index, row in df.iterrows():
+    for index, row in tqdm(df.head().iterrows(),  total=df.shape[0]):
         test = test_fn(store, row, max_i)
         results = results.append(test)
     return results
